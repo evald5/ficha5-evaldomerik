@@ -1,0 +1,24 @@
+{
+  "name": "ficha5-evaldomerik",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/evald5/ficha5-evaldomerik.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/evald5/ficha5-evaldomerik/issues"
+  },
+  "homepage": "https://github.com/evald5/ficha5-evaldomerik#readme",
+  "dependencies": {
+    "express": "^5.3.0"
+  }
+}
