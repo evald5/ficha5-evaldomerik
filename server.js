@@ -1,13 +1,11 @@
 const express = require("express");
+const cors = require("cors");
 
 const app = express();
 const PORT = 3000;
 
-// CORS à mão (aula 5)
-app.use((req, res, next) => {
-  res.set("Access-Control-Allow-Origin", "http://localhost:5173");
-  next();
-});
+app.use(cors({ origin: "http://localhost:5173" }));
+app.use(express.json());
 
 const cards = [
   {
@@ -47,6 +45,19 @@ const cards = [
   }
 ];
 
+// próximo id livre
+function proximoId() {
+  return Math.max(0, ...cards.map((c) => c.id)) + 1;
+}
+
+// para o nome de uma carta não estragar o HTML
+function escapar(texto) {
+  return String(texto)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
 app.get("/", (req, res) => {
   res.send(`
     <h1>A minha coleção de cartas</h1>
@@ -56,7 +67,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/cartas", (req, res) => {
-  const items = cards.map((card) => `<li>${card.name}</li>`).join("");
+  const items = cards.map((card) => `<li>${escapar(card.name)}</li>`).join("");
   res.send(`
     <h1>Cartas</h1>
     <ul>${items}</ul>
@@ -65,6 +76,20 @@ app.get("/cartas", (req, res) => {
 
 app.get("/api/cartas", (req, res) => {
   res.json(cards);
+});
+
+app.post("/api/cartas", (req, res) => {
+  const { name, type, attack } = req.body || {};
+  console.log("POST /api/cartas", req.body);
+
+  const card = {
+    id: proximoId(),
+    name: String(name).trim(),
+    type,
+    attack: Number(attack) || 0,
+  };
+  cards.push(card);
+  res.status(201).json(card);
 });
 
 app.listen(PORT, () => {

@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/evald5/ficha5-evaldomerik#readme",
   "dependencies": {
+    "cors": "^2.8.6",
     "express": "^5.3.0"
   }
 }
