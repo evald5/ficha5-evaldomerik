@@ -18,9 +18,15 @@ function App() {
       .then((data) => setCards(data));
   }, []);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault(); // não deixa a página recarregar
-    const card = { id: Date.now(), name, type, attack: Number(attack) || 0 };
+    const res = await fetch(API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, type, attack: Number(attack) || 0 }),
+    });
+    // a carta que entra na lista é a que o server devolveu
+    const card = await res.json();
     setCards([...cards, card]);
     // limpa o form
     setName("");
