@@ -1,49 +1,22 @@
 const express = require("express");
 const cors = require("cors");
+const fs = require("fs");
+const path = require("path");
 
 const app = express();
 const PORT = 3000;
+const FICHEIRO = path.join(__dirname, "cartas.json");
 
 app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 
-const cards = [
-  {
-    "id": 1,
-    "name": "Dragão de Cobalto",
-    "type": "Criatura",
-    "attack": 7,
-    "defense": 5
-  },
-  {
-    "id": 2,
-    "name": "Guardiã das Marés",
-    "type": "Criatura",
-    "attack": 4,
-    "defense": 8
-  },
-  {
-    "id": 3,
-    "name": "Raio Carmesim",
-    "type": "Feitiço",
-    "attack": 6,
-    "defense": 0
-  },
-  {
-    "id": 4,
-    "name": "Muralha de Granito",
-    "type": "Estrutura",
-    "attack": 0,
-    "defense": 10
-  },
-  {
-    "id": 5,
-    "name": "Lobo das Cinzas",
-    "type": "Criatura",
-    "attack": 5,
-    "defense": 3
-  }
-];
+// lê as cartas do ficheiro ao arrancar o server
+const cards = JSON.parse(fs.readFileSync(FICHEIRO, "utf8"));
+
+// grava as cartas no ficheiro
+function guardar() {
+  fs.writeFileSync(FICHEIRO, JSON.stringify(cards, null, 2));
+}
 
 // próximo id livre
 function proximoId() {
@@ -89,6 +62,7 @@ app.post("/api/cartas", (req, res) => {
     attack: Number(attack) || 0,
   };
   cards.push(card);
+  guardar();
   res.status(201).json(card);
 });
 
