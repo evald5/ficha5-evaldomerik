@@ -6,6 +6,11 @@ const API = "http://localhost:3000/api/cartas";
 function App() {
   const [cards, setCards] = useState([]);
 
+  // campos do formulário
+  const [name, setName] = useState("");
+  const [type, setType] = useState("");
+  const [attack, setAttack] = useState("");
+
   // vai buscar as cartas ao server quando a página abre
   useEffect(() => {
     fetch(API)
@@ -13,10 +18,43 @@ function App() {
       .then((data) => setCards(data));
   }, []);
 
+  function handleSubmit(e) {
+    e.preventDefault(); // não deixa a página recarregar
+    const card = { id: Date.now(), name, type, attack: Number(attack) || 0 };
+    setCards([...cards, card]);
+    // limpa o form
+    setName("");
+    setType("");
+    setAttack("");
+  }
+
   return (
     <main>
       <h1>A minha coleção</h1>
       <p>Tenho {cards.length} cartas</p>
+
+      <form onSubmit={handleSubmit}>
+        <h2>Nova carta</h2>
+        <input
+          type="text"
+          placeholder="Nome"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <select value={type} onChange={(e) => setType(e.target.value)}>
+          <option value="">Escolhe o tipo</option>
+          <option value="Criatura">Criatura</option>
+          <option value="Feitiço">Feitiço</option>
+          <option value="Estrutura">Estrutura</option>
+        </select>
+        <input
+          type="number"
+          placeholder="Ataque"
+          value={attack}
+          onChange={(e) => setAttack(e.target.value)}
+        />
+        <button type="submit">Acrescentar</button>
+      </form>
 
       <ul>
         {cards.map((card) => (
