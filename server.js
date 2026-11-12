@@ -55,6 +55,11 @@ app.post("/api/cartas", (req, res) => {
   const { name, type, attack } = req.body || {};
   console.log("POST /api/cartas", req.body);
 
+  // sem nome ou sem tipo: 400 e não guarda
+  if (!name || !type || String(name).trim() === "") {
+    return res.status(400).json({ erro: "A carta precisa de nome e tipo" });
+  }
+
   const card = {
     id: proximoId(),
     name: String(name).trim(),

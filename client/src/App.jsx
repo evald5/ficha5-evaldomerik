@@ -10,6 +10,7 @@ function App() {
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [attack, setAttack] = useState("");
+  const [formError, setFormError] = useState("");
 
   // vai buscar as cartas ao server quando a página abre
   useEffect(() => {
@@ -20,18 +21,28 @@ function App() {
 
   async function handleSubmit(e) {
     e.preventDefault(); // não deixa a página recarregar
-    const res = await fetch(API, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, type, attack: Number(attack) || 0 }),
-    });
-    // a carta que entra na lista é a que o server devolveu
-    const card = await res.json();
-    setCards([...cards, card]);
-    // limpa o form
-    setName("");
-    setType("");
-    setAttack("");
+    setFormError("");
+    try {
+      const res = await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, type, attack: Number(attack) || 0 }),
+      });
+      if (!res.ok) {
+        // por exemplo "HTTP 400"
+        setFormError("HTTP " + res.status);
+        return;
+      }
+      // a carta que entra na lista é a que o server devolveu
+      const card = await res.json();
+      setCards([...cards, card]);
+      // limpa o form
+      setName("");
+      setType("");
+      setAttack("");
+    } catch {
+      setFormError("Não foi possível ligar ao server");
+    }
   }
 
   return (
@@ -61,6 +72,7 @@ function App() {
         />
         <button type="submit">Acrescentar</button>
       </form>
+      {formError && <p style={{ color: "red" }}>{formError}</p>}
 
       <ul>
         {cards.map((card) => (
