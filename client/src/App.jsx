@@ -11,6 +11,7 @@ function App() {
   const [type, setType] = useState("");
   const [attack, setAttack] = useState("");
   const [formError, setFormError] = useState("");
+  const [sending, setSending] = useState(false);
 
   // vai buscar as cartas ao server quando a página abre
   useEffect(() => {
@@ -22,6 +23,7 @@ function App() {
   async function handleSubmit(e) {
     e.preventDefault(); // não deixa a página recarregar
     setFormError("");
+    setSending(true);
     try {
       const res = await fetch(API, {
         method: "POST",
@@ -42,6 +44,8 @@ function App() {
       setAttack("");
     } catch {
       setFormError("Não foi possível ligar ao server");
+    } finally {
+      setSending(false);
     }
   }
 
@@ -77,7 +81,7 @@ function App() {
           value={attack}
           onChange={(e) => setAttack(e.target.value)}
         />
-        <button type="submit">Acrescentar</button>
+        <button type="submit" disabled={sending}>{sending ? "A enviar…" : "Acrescentar"}</button>
       </form>
       {formError && <p style={{ color: "red" }}>{formError}</p>}
 
