@@ -1,21 +1,34 @@
-// PONTO DE PARTIDA DA AULA 4
-//
-// É exatamente onde o professor acabou o live coding do Bloco 1:
-// uma app React criada com o Vite, já sem o código de exemplo.
-//
-// Para pôr a correr (dentro da pasta client/ do teu repo):
-//     npm install
-//     npm run dev
-// e abrir http://localhost:5173
-//
-// Tarefa 1: substitui este array vazio pelo array cards do teu server
-// (o que fizeste na aula 2).
-const cards = [];
+import { useState, useEffect } from "react";
+import Card from "./Card.jsx";
+
+const API = "http://localhost:3000/api/cartas";
 
 function App() {
+  const [cards, setCards] = useState([]);
+
+  // vai buscar as cartas ao server quando a página abre
+  useEffect(() => {
+    fetch(API)
+      .then((res) => res.json())
+      .then((data) => setCards(data));
+  }, []);
+
   return (
     <main>
       <h1>A minha coleção</h1>
+      <p>Tenho {cards.length} cartas</p>
+
+      <ul>
+        {cards.map((card) => (
+          <Card
+            key={card.id}
+            name={card.name}
+            type={card.type}
+            attack={card.attack}
+            defense={card.defense}
+          />
+        ))}
+      </ul>
     </main>
   );
 }
