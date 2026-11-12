@@ -71,6 +71,19 @@ app.post("/api/cartas", (req, res) => {
   res.status(201).json(card);
 });
 
+app.delete("/api/cartas/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const index = cards.findIndex((card) => card.id === id);
+
+  if (index === -1) {
+    return res.status(404).json({ erro: "Carta não encontrada" });
+  }
+
+  cards.splice(index, 1);
+  guardar();
+  res.status(204).end();
+});
+
 app.listen(PORT, () => {
   console.log(`Server a correr em http://localhost:${PORT}`);
 });

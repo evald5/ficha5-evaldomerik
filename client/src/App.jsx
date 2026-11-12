@@ -45,6 +45,13 @@ function App() {
     }
   }
 
+  async function handleDelete(id) {
+    const res = await fetch(API + "/" + id, { method: "DELETE" });
+    if (res.ok) {
+      setCards(cards.filter((card) => card.id !== id));
+    }
+  }
+
   return (
     <main>
       <h1>A minha coleção</h1>
@@ -82,6 +89,7 @@ function App() {
             type={card.type}
             attack={card.attack}
             defense={card.defense}
+            onDelete={() => handleDelete(card.id)}
           />
         ))}
       </ul>
